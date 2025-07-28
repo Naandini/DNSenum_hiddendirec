@@ -1,0 +1,66 @@
+DNS ENUMEATION AND FINDIG HIDDEN DIRECTORIS USING BRUTE FORCE 
+
+
+Figlet in Linux
+Figlet is a command-line utility in Linux that transforms plain text into ASCII art banners
+To use a specific font: figlet -f slant "Hello World"
+Alignment
+Left-align: figlet -l "Text"
+Right-align: figlet -r "Text"
+Center-align (default): figlet "Text"
+
+
+
+The dig (Domain Information Groper) command is a powerful tool for querying DNS (Domain Name System) servers.
+It is widely used by system administrators to troubleshoot DNS issues and retrieve DNS records such as A, MX, NS, and more
+
++short: Displays a concise output with only the essential information.
+
+DNS Enumeration involves identifying and gathering information about various DNS records associated with a domain. Here are the common types of DNS records:
+
+1. A Record (Address Record)
+Purpose: Maps a domain name to its corresponding IPv4 address.
+2. MX Record (Mail Exchange Record)
+Purpose: Specifies the mail servers responsible for receiving emails for a domain.
+3. NS Record (Name Server Record)
+Purpose: Specifies the authoritative name servers for a domain.
+
+echo- Announces the phase
+for sub in …; do … done: Loops over a list of typical subdomain names (www, mail, etc.)
+host $sub.$domain: Runs a DNS lookup on each subdomain.
+grep "has address": Checks if the DNS lookup returned an A record (i.e., the subdomain exists and has an IP).
+&& echo "$sub.$domain is live": If the grep finds a match (exit status 0), it echoes that the subdomain is live.
+
+Defines the variable wordlist pointing to wordlist.txt in the current folder.
+
+[[ ! -f ... ]]: Tests if wordlist.txt does not exist or isn’t a regular file.
+If missing, it notifies the user and exits with an error (exit 1).
+
+while IFS= read -r dir; do: Reads each line from wordlist.txt into dir, preserving spaces and avoiding backslash interpretation.
+
+IFS=
+* IFS stands for Internal Field Separator in Bash.
+* By default, it's set to whitespace (spaces, tabs, newlines), which affects how Bash splits input into words.
+* Setting IFS= (empty) ensures read reads the entire line without splitting on spaces or tabs, preserving the full line as-is
+
+while …; do loops as long as read -r dir successfully reads a line (exit status 0).
+IFS= ensures the entire line is preserved in dir.
+-r makes read treat backslashes literally.
+dir holds the current word from the wordlist file in each iteration.
+done < "$wordlist" redirects the file into the loop, making its lines the loop’s input.
+
+
+[[ -z "$dir" ]] && continue: Skips empty lines.
+url="${domain%/}/$dir/": Constructs the URL to check. ${domain%/} strips a trailing slash if present.
+status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url"):
+* -s: silent (no progress meter).
+* -o /dev/null: discards response body.
+* -w "%{http_code}": prints only the HTTP status code.
+if [[ … ]]: Checks if the returned status code is one of 200 OK, 301 Moved Permanently, or 403 Forbidden.
+If yes, prints that the directory was found, along with the HTTP code.
+
+Summary
+1. Banner – improves readability in output.
+2. Subdomain check – tests common subdomains via DNS queries.
+3. Directory brute force – uses a wordlist to probe directories on the main domain using curl and reports results for key status codes (200, 301, 403).
+
