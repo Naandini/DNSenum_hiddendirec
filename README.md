@@ -15,3 +15,8 @@ Discovering them can reveal vulnerabilities or entry points for attackers.
 •Wordlist.txt
 This file includes a collection of commonly used directory names (e.g., admin, backup, test, uploads) that are used during the scanning process.
 These are tested against a target website to find if any of these folders are accessible.
+
+IMPORTANT NOTE:-
+•Run the script only after bundling it with the wordlist in the same location.
+•Keep the wordlist.txt and .sh file together—separation breaks functionality.
+•Script won’t function properly unless the wordlist is present in the same directory—keep them together before running.
